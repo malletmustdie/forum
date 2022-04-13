@@ -1,5 +1,15 @@
 spring:
   main:
     allow-circular-references: true
+  datasource:
+    url: jdbc:postgresql://127.0.0.1:5433/forum
+    username: postgres
+    password: pass
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    properties.hibernate:
+        show_sql: true
+        format_sql: true
+        hbm2ddl.auto: validate
   liquibase:
-    enabled: false
+    change-log: classpath:db/changelog/db.changelog-master.xml

@@ -7,38 +7,43 @@ import org.springframework.stereotype.Service;
 import ru.job4j.forum.dto.PostDto;
 import ru.job4j.forum.mapper.PostMapper;
 import ru.job4j.forum.model.Post;
-import ru.job4j.forum.repository.PostMemoryRepository;
-import ru.job4j.forum.service.PostMemoryService;
+import ru.job4j.forum.repository.PostRepository;
+import ru.job4j.forum.service.PostService;
 
 @Service
 @RequiredArgsConstructor
-public class PostMemoryServiceImpl implements PostMemoryService {
+public class PostServiceImpl implements PostService {
 
-    private final PostMemoryRepository memoryRepository;
+    private final PostRepository postRepository;
 
     private final PostMapper postMapper;
 
     @Override
     public Post savePost(PostDto dto) {
         var post = postMapper.map(dto);
-        memoryRepository.save(post);
+        postRepository.save(post);
         return post;
     }
 
     @Override
     public void updatePost(PostDto dto) {
         var post = postMapper.map(dto);
-        memoryRepository.update(post);
+        postRepository.findById(post.getId())
+                      .ifPresent(actualPost -> {
+                          actualPost.setName(post.getName());
+                          actualPost.setDescription(post.getDescription());
+                          postRepository.save(actualPost);
+                      });
     }
 
     @Override
     public List<Post> getAllPosts() {
-        return memoryRepository.findAll();
+        return postRepository.findAll();
     }
 
     @Override
     public PostDto findPostById(Integer id) {
-        return postMapper.map(memoryRepository.getById(id));
+        return postMapper.map(postRepository.getById(id));
     }
 
 }

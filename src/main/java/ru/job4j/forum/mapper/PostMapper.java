@@ -2,10 +2,8 @@ package ru.job4j.forum.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.springframework.security.core.userdetails.User;
 import ru.job4j.forum.config.SpringMapperConfig;
 import ru.job4j.forum.dto.PostDto;
-import ru.job4j.forum.dto.UserDto;
 import ru.job4j.forum.model.Post;
 
 @Mapper(config = SpringMapperConfig.class)

@@ -2,6 +2,7 @@ package ru.job4j.forum.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.job4j.forum.dto.UserDto;
-import ru.job4j.forum.model.Authority;
+import ru.job4j.forum.service.AuthorityService;
 import ru.job4j.forum.service.UserService;
 
 @Slf4j
@@ -23,13 +24,13 @@ public class RegController {
 
     private final UserService userService;
 
+    private final AuthorityService authorityService;
+
     @PostMapping("/reg")
     public String regSave(@ModelAttribute UserDto userDto) {
         userDto.setEnabled(true);
         userDto.setPassword(encoder.encode(userDto.getPassword()));
-        userDto.setAuthority(Authority.builder()
-                                      .authority("ROLE_USER")
-                                      .build());
+        userDto.setAuthority(authorityService.findByAuthority("ROLE_USER"));
         userService.saveUser(userDto);
         return "redirect:/login";
     }
@@ -45,7 +46,7 @@ public class RegController {
         return "reg";
     }
 
-    @ExceptionHandler(value = Exception.class)
+    @ExceptionHandler(value = DataIntegrityViolationException.class)
     public String exceptionHandler(Exception e) {
         log.error(e.getMessage());
         return "redirect:/reg?error=true";

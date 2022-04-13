@@ -17,7 +17,7 @@
             integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
             crossorigin="anonymous"></script>
 
-    <title>Edit Accident</title>
+    <title>Edit Post</title>
 </head>
 <body>
 <div class="container pt-3">
@@ -42,13 +42,14 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label class="col-form-label col-sm-3" for="text">Описание</label>
+                                <label class="col-form-label col-sm-3" for="description">Описание</label>
                                 <div class="col-sm-5">
-                                    <input class="form-control"
-                                           type="text"
-                                           name="description"
-                                           id="text"
-                                           th:value="${post.description}">
+                                    <textarea class="form-control"
+                                              id="description"
+                                              type="text"
+                                              name="description"
+                                              rows="5"
+                                              th:text="${post.description}"></textarea>
                                 </div>
                             </div>
                             <div class="form-group row">
