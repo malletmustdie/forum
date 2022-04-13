@@ -1,5 +1,7 @@
 package ru.job4j.forum.config;
 
+import javax.sql.DataSource;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,30 +11,25 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import ru.job4j.forum.model.Authority;
-import ru.job4j.forum.model.User;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    private final DataSource dataSource;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        var user = User.builder()
-                       .id(1)
-                       .username("root")
-                       .password("qwerty")
-                       .authority(Authority.builder()
-                                           .id(1)
-                                           .authority("ADMIN")
-                                           .build())
-                       .build();
-        var passwordEncoder = this.passwordEncoder();
-        auth.inMemoryAuthentication()
-            .passwordEncoder(passwordEncoder)
-            .withUser(user.getUsername())
-            .password(passwordEncoder.encode(user.getPassword()))
-            .roles(user.getAuthority().getAuthority());
+        auth.jdbcAuthentication()
+            .dataSource(dataSource)
+            .usersByUsernameQuery("select username, password, enabled "
+                                          + "from users "
+                                          + "where username = ?")
+            .authoritiesByUsernameQuery(
+                    " select u.username, a.authority "
+                            + "from authorities a, users u "
+                            + "where u.username = ? and u.authority_id = a.id");
     }
 
     @Bean
@@ -43,7 +40,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-            .antMatchers("/login")
+            .antMatchers("/login", "/reg")
             .permitAll()
             .antMatchers("/**")
             .hasAnyRole("ADMIN", "USER")
