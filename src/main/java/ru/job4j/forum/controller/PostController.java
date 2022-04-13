@@ -20,14 +20,14 @@ public class PostController {
 
     @GetMapping("/create")
     public String create() {
-        return "create";
+        return "post/create";
     }
 
     @GetMapping("/edit")
     public String edit(@RequestParam("id") Integer id, Model model) {
         var postDto = postService.findPostById(id);
         model.addAttribute("post", postDto);
-        return "update";
+        return "post/update";
     }
 
     @PostMapping("/save")
