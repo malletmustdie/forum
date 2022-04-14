@@ -30,7 +30,7 @@
                     </div>
                     <div class="card-body">
                         <form th:action="@{/update}" method="POST">
-                            <input type="text" hidden name="id" th:value="${post.id}">
+                            <input type="hidden" th:value="${post.id}" name="id">
                             <div class="form-group row">
                                 <label class="col-form-label col-sm-3" for="name">Тема обсуждения</label>
                                 <div class="col-sm-5">
