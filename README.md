@@ -1,12 +1,8 @@
 # job4j_forum
 
-### Reference Documentation
-
-Классический форум. Простая функциональность добавление обсуждаемой темы, комментировать, удалять и исправлять!
-
-Использованные технологии
-Spring Boot
-Liquibase
-PostgresSQL
-Heroku
-
+## Используемые технологии
++ **Java 14**,
++ **Spring Boot 2**,
++ **PostgreSQL**, **Hibernate**, **Liquibase**
++ **Bootstrap**, **HTML**
++ **Maven**
