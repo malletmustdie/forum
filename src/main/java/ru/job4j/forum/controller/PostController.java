@@ -3,12 +3,14 @@ package ru.job4j.forum.controller;
 import java.time.LocalDate;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.server.ResponseStatusException;
 import ru.job4j.forum.dto.PostDto;
 import ru.job4j.forum.service.PostService;
 
@@ -25,9 +27,11 @@ public class PostController {
 
     @GetMapping("/edit")
     public String edit(@RequestParam("id") Integer id, Model model) {
-        var postDto = postService.findPostById(id);
-        model.addAttribute("post", postDto);
-        return "post/update";
+        return postService.findPostById(id)
+                          .map(post -> {
+                              model.addAttribute("post", post);
+                              return "post/update";
+                          }).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
     @PostMapping("/save")

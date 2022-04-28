@@ -1,6 +1,7 @@
 package ru.job4j.forum.service.impl;
 
 import java.util.List;
+import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,9 +21,10 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Post savePost(PostDto dto) {
-        var post = postMapper.map(dto);
-        postRepository.save(post);
-        return post;
+        return Optional.of(dto)
+                       .map(postMapper::map)
+                       .map(postRepository::save)
+                       .orElseThrow();
     }
 
     @Override
@@ -42,8 +44,10 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostDto findPostById(Integer id) {
-        return postMapper.map(postRepository.getById(id));
+    public Optional<PostDto> findPostById(Integer id) {
+        return postRepository.findById(id)
+                             .map(postMapper::map);
+
     }
 
 }

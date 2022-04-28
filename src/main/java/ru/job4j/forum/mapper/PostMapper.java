@@ -12,7 +12,9 @@ public interface PostMapper {
     @Mapping(source = "dto.id", target = "id")
     @Mapping(source = "dto.name", target = "name")
     @Mapping(source = "dto.description", target = "description")
-    @Mapping(source = "dto.created", target = "created")
+    @Mapping(source = "dto.created",
+             target = "created",
+             defaultExpression = "java(java.time.LocalDate.now())")
     Post map(PostDto dto);
 
     @Mapping(source = "entity.id", target = "id")
